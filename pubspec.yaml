@@ -1,7 +1,7 @@
 name: generate_mvvm_structure
-description: A CLI tool to generate MVVM folder structure for Flutter projects.
+description: Generate Struktur for State Management with Provider.
 version: 0.0.1
-repository: https://github.com/yourusername/generate_mvvm_structure
+repository: https://github.com/ridhocr/generate_state_provder
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
