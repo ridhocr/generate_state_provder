@@ -1,0 +1,13 @@
+name: generate_mvvm_structure
+description: A CLI tool to generate MVVM folder structure for Flutter projects.
+version: 0.0.1
+repository: https://github.com/yourusername/generate_mvvm_structure
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+executables:
+  generate_mvvm_structure: bin/generate_mvvm_structure.dart
+
+dependencies:
+  path: any
