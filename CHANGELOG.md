@@ -1,4 +1,4 @@
-## 0.0.4
+## 0.0.5
 
 - Fix add generate file in folder structure.
 
