@@ -7,7 +7,7 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 executables:
-  generate_mvvm_structure: bin/generate_mvvm_structure.dart
+  generate_mvvm_structure:
 
 dependencies:
-  path: any
+  path: ^1.9.0
