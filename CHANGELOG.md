@@ -1,3 +1,7 @@
+## 0.0.3
+
+- Fix bug location folder structure.
+
 ## 0.0.2
 
 - Fix folder structure.
