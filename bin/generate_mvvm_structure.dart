@@ -1,95 +1,67 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:io';
+import 'package:args/args.dart';
 
 void main(List<String> arguments) async {
-  final files = {
-    'lib/model/example_model.dart': 'class ExampleModel {}',
-    'lib/service/api/example_api.dart': 'class ExampleApi {}',
-    'lib/service/lokal/shared_prefference.dart':
-        """import 'package:shared_preferences/shared_preferences.dart';
+  final parser = ArgParser()
+    ..addOption('feature', abbr: 'f', help: 'Generate MVVM files for a feature');
 
-class SharedPreferenceService {
-  void setStringSharedPref(String key, String value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(key, value);
+  final argResults = parser.parse(arguments);
+  final featureName = argResults['feature'];
+
+  if (featureName == null || featureName.isEmpty) {
+    print('⚠️  Please provide a feature name using --feature <name>');
+    return;
   }
 
-  Future<String> getStringSharedPref(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? value = prefs.getString(key);
-    return value.toString();
-  }
+  final className = featureName[0].toUpperCase() + featureName.substring(1);
+  final baseDir = Directory('lib');
 
-  Future removeSharedPref() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
-  }
-}""",
-    'lib/viewmodel/example_viewmodel.dart':
-        """import 'package:flutter/material.dart';
+  final structure = {
+    'model/\${featureName}_model.dart': 'class \${className}Model {}',
+    'view/\${featureName}_view.dart': """import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../viewmodel/\${featureName}_viewmodel.dart';
 
-class ExampleViewModel extends ChangeNotifier {
-  String title = 'Hello ViewModel';
+class \${className}View extends StatelessWidget {
+  const \${className}View({super.key});
 
-  ExampleViewModel(BuildContext context) {
-    // Initialize your ViewModel here
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => \${className}ViewModel(),
+      child: Consumer<\${className}ViewModel>(
+        builder: (context, vm, _) {
+          return Scaffold(
+            body: Center(child: Text(vm.title)),
+          );
+        },
+      ),
+    );
   }
+}
+""",
+    'viewmodel/\${featureName}_viewmodel.dart': """import 'package:flutter/material.dart';
+
+class \${className}ViewModel extends ChangeNotifier {
+  String title = '\${className} ViewModel';
 
   void updateTitle(String newTitle) {
     title = newTitle;
     notifyListeners();
   }
-}""",
-    'lib/view/example_view.dart': """import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-class ExampleView extends StatefulWidget {
-  const ExampleView({super.key});
-
-  @override
-  State<ExampleView> createState() => _ExampleView();
 }
-
-class _ExampleView extends State<ExampleView> {
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ExampleViewModel>(
-      create: (context) => ExampleViewModel(context),
-      child: Builder(builder: (context) {
-        return Consumer<ExampleViewModel>(builder: (context, viewModel, child) {
-          return Container(
-            child: widget,
-          );
-        });
-      }),
-    );
-  }
-}""",
+"""
   };
 
-  for (final entry in files.entries) {
-    final file = File('\${baseDir.path}/\${entry.key}');
-    await file.writeAsString(entry.value);
+  for (var path in structure.keys) {
+    final file = File('\${baseDir.path}/\$path');
+    await file.parent.create(recursive: true);
+    await file.writeAsString(structure[path]!
+        .replaceAll('\${featureName}', featureName)
+        .replaceAll('\${className}', className));
   }
 
-  final pubspec = File('\${baseDir.path}/pubspec.yaml');
-  await pubspec.writeAsString("""name: \$projectName
-description: A Flutter MVVM structured project generated via CLI
-version: 0.0.1
-environment:
-  sdk: '>=3.0.0 <4.0.0'
-
-dependencies:
-  flutter:
-    sdk: flutter
-  hexcolor: ^3.0.1
-  provider: ^6.1.2
-  intl: ^0.20.1
-  dio: ^5.8.0
-  shared_preferences: ^2.2.3
-
-flutter:
-  uses-material-design: true
-""");
-
-  print('✅ MVVM structure generated in ./\$projectName');
+  print('✅ Feature "\$featureName" generated successfully.');
 }
