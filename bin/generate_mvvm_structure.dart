@@ -1,67 +1,68 @@
-// ignore_for_file: unused_local_variable
-
 import 'dart:io';
-import 'package:args/args.dart';
 
 void main(List<String> arguments) async {
-  final parser = ArgParser()
-    ..addOption('feature', abbr: 'f', help: 'Generate MVVM files for a feature');
+  final libDir = Directory('lib');
 
-  final argResults = parser.parse(arguments);
-  final featureName = argResults['feature'];
+  final folders = [
+    'model',
+    'service/api',
+    'service/lokal',
+    'viewmodel',
+    'view',
+    'other',
+    'customwidget',
+  ];
 
-  if (featureName == null || featureName.isEmpty) {
-    print('⚠️  Please provide a feature name using --feature <name>');
-    return;
+  for (final folder in folders) {
+    final dir = Directory('${libDir.path}/$folder');
+    await dir.create(recursive: true);
   }
 
-  final className = featureName[0].toUpperCase() + featureName.substring(1);
-  final baseDir = Directory('lib');
-
-  final structure = {
-    'model/\${featureName}_model.dart': 'class \${className}Model {}',
-    'view/\${featureName}_view.dart': """import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../viewmodel/\${featureName}_viewmodel.dart';
-
-class \${className}View extends StatelessWidget {
-  const \${className}View({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => \${className}ViewModel(),
-      child: Consumer<\${className}ViewModel>(
-        builder: (context, vm, _) {
-          return Scaffold(
-            body: Center(child: Text(vm.title)),
-          );
-        },
-      ),
-    );
-  }
-}
-""",
-    'viewmodel/\${featureName}_viewmodel.dart': """import 'package:flutter/material.dart';
-
-class \${className}ViewModel extends ChangeNotifier {
-  String title = '\${className} ViewModel';
-
-  void updateTitle(String newTitle) {
-    title = newTitle;
-    notifyListeners();
-  }
-}
-"""
+  final dependenciesToAdd = {
+    'hexcolor': '^3.0.1',
+    'provider': '^6.1.2',
+    'intl': '^0.20.1',
+    'dio': '^5.8.0',
+    'shared_preferences': '^2.2.3',
   };
 
-  for (var path in structure.keys) {
-    final file = File('\${baseDir.path}/\$path');
-    await file.parent.create(recursive: true);
-    await file.writeAsString(structure[path]!
-        .replaceAll('\${featureName}', featureName)
-        .replaceAll('\${className}', className));
+  final pubspecFile = File('pubspec.yaml');
+  if (await pubspecFile.exists()) {
+    final lines = await pubspecFile.readAsLines();
+
+    final newLines = <String>[];
+    bool inDependencies = false;
+    final existingDependencies = <String>{};
+
+    for (final line in lines) {
+      newLines.add(line);
+      if (line.trim() == 'dependencies:') {
+        inDependencies = true;
+      } else if (inDependencies && (line.startsWith(RegExp(r'^[a-zA-Z]')))) {
+        final depName = line.split(':').first.trim();
+        existingDependencies.add(depName);
+      } else if (inDependencies && line.trim().isEmpty) {
+        inDependencies = false;
+      }
+    }
+
+    final toInsert = dependenciesToAdd.entries
+        .where((entry) => !existingDependencies.contains(entry.key))
+        .map((entry) => '  ${entry.key}: ${entry.value}')
+        .toList();
+
+    if (toInsert.isNotEmpty) {
+      final insertIndex =
+          newLines.indexWhere((line) => line.trim() == 'dependencies:') + 1;
+      newLines.insertAll(insertIndex, toInsert);
+      await pubspecFile.writeAsString(newLines.join('\n'));
+      print('✅ Dependencies added to pubspec.yaml');
+    } else {
+      print('ℹ️  All dependencies already present in pubspec.yaml');
+    }
+  } else {
+    print('❌ pubspec.yaml not found in root directory.');
   }
 
-  print('✅ Feature "\$featureName" generated successfully.');
+  print('✅ MVVM structure generated under lib/');
 }

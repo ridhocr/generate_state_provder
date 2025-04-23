@@ -12,7 +12,7 @@ A Dart CLI tool to generate a complete MVVM folder structure for Flutter project
 ## 🚀 Usage
 
 ```bash
-dart run generate_mvvm_structure my_project
+dart run generate_mvvm_structure
 ```
 
 This will create the following structure:

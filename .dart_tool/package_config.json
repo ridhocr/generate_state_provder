@@ -2,12 +2,6 @@
   "configVersion": 2,
   "packages": [
     {
-      "name": "args",
-      "rootUri": "file:///C:/Users/821948/AppData/Local/Pub/Cache/hosted/pub.dev/args-2.7.0",
-      "packageUri": "lib/",
-      "languageVersion": "3.3"
-    },
-    {
       "name": "path",
       "rootUri": "file:///C:/Users/821948/AppData/Local/Pub/Cache/hosted/pub.dev/path-1.9.1",
       "packageUri": "lib/",
@@ -20,7 +14,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-04-23T07:58:19.901196Z",
+  "generated": "2025-04-23T08:08:35.609660Z",
   "generator": "pub",
   "generatorVersion": "3.6.0",
   "flutterRoot": "file:///C:/src/flutter",
