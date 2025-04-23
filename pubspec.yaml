@@ -1,6 +1,6 @@
 name: generate_mvvm_structure
 description: Generate Struktur for State Management with Provider.
-version: 0.0.4
+version: 0.0.5
 repository: https://github.com/ridhocr/generate_state_provder
 
 environment:

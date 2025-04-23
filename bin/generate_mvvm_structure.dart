@@ -13,11 +13,93 @@ void main(List<String> arguments) async {
     'customwidget',
   ];
 
+  // 1. Create folder structure inside /lib
   for (final folder in folders) {
     final dir = Directory('${libDir.path}/$folder');
     await dir.create(recursive: true);
   }
 
+  // 2. Create template files
+  final files = {
+    'view/example_view.dart': """
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../viewmodel/example_viewmodel.dart';
+
+class ExampleView extends StatefulWidget {
+  const ExampleView({super.key});
+
+  @override
+  State<ExampleView> createState() => _ExampleView();
+}
+
+class _ExampleView extends State<ExampleView> {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<ExampleViewModel>(
+      create: (context) => ExampleViewModel(context),
+      child: Builder(
+        builder: (context) {
+          return Consumer<ExampleViewModel>(
+            builder: (context, viewModel, child) {
+              return Container(
+                child: Text(viewModel.title),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+""",
+    'viewmodel/example_viewmodel.dart': """
+import 'package:flutter/material.dart';
+
+class ExampleViewModel extends ChangeNotifier {
+  String title = 'Hello ViewModel';
+
+  ExampleViewModel(BuildContext context) {
+    // Initialize your ViewModel here
+  }
+
+  void updateTitle(String newTitle) {
+    title = newTitle;
+    notifyListeners();
+  }
+}
+""",
+    'service/lokal/shared_preference.dart': """
+import 'package:shared_preferences/shared_preferences.dart';
+
+class SharedPreferenceService {
+  void setStringSharedPref(String key, String value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(key, value);
+  }
+
+  Future<String> getStringSharedPref(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? value = prefs.getString(key);
+    return value.toString();
+  }
+
+  Future removeSharedPref() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
+}
+""",
+  };
+
+  print('✅ Files example added');
+
+  for (final entry in files.entries) {
+    final file = File('${libDir.path}/${entry.key}');
+    await file.writeAsString(entry.value);
+  }
+
+  // 3. Add dependencies if not present
   final dependenciesToAdd = {
     'hexcolor': '^3.0.1',
     'provider': '^6.1.2',
@@ -38,7 +120,7 @@ void main(List<String> arguments) async {
       newLines.add(line);
       if (line.trim() == 'dependencies:') {
         inDependencies = true;
-      } else if (inDependencies && (line.startsWith(RegExp(r'^[a-zA-Z]')))) {
+      } else if (inDependencies && line.startsWith(RegExp(r'^[a-zA-Z]'))) {
         final depName = line.split(':').first.trim();
         existingDependencies.add(depName);
       } else if (inDependencies && line.trim().isEmpty) {
@@ -64,5 +146,5 @@ void main(List<String> arguments) async {
     print('❌ pubspec.yaml not found in root directory.');
   }
 
-  print('✅ MVVM structure generated under lib/');
+  print('✅ MVVM structure & template files created in lib/');
 }

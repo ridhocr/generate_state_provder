@@ -1,5 +1,9 @@
 ## 0.0.4
 
+- Fix add generate file in folder structure.
+
+## 0.0.4
+
 - Fix logic generate location folder structure.
 
 ## 0.0.3
