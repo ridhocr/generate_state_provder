@@ -1,25 +1,6 @@
 import 'dart:io';
 
 void main(List<String> arguments) async {
-  final projectName =
-      arguments.isNotEmpty ? arguments.first : 'my_mvvm_project';
-  final baseDir = Directory(projectName);
-
-  final folders = [
-    'lib/model',
-    'lib/service/api',
-    'lib/service/lokal',
-    'lib/viewmodel',
-    'lib/view',
-    'lib/other',
-    'lib/customwidget',
-  ];
-
-  for (final folder in folders) {
-    final dir = Directory('${baseDir.path}/$folder');
-    await dir.create(recursive: true);
-  }
-
   final files = {
     'lib/model/example_model.dart': 'class ExampleModel {}',
     'lib/service/api/example_api.dart': 'class ExampleApi {}',
@@ -32,19 +13,16 @@ class SharedPreferenceService {
     prefs.setString(key, value);
   }
 
-  // note: get shared pref
   Future<String> getStringSharedPref(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? value = prefs.getString(key);
     return value.toString();
   }
 
-  // note: remove shared pref
   Future removeSharedPref() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // print('removed');
     prefs.clear();
-  },
+  }
 }""",
     'lib/viewmodel/example_viewmodel.dart':
         """import 'package:flutter/material.dart';
@@ -54,14 +32,13 @@ class ExampleViewModel extends ChangeNotifier {
 
   ExampleViewModel(BuildContext context) {
     // Initialize your ViewModel here
-  };
+  }
 
   void updateTitle(String newTitle) {
     title = newTitle;
     notifyListeners();
   }
-}
-""",
+}""",
     'lib/view/example_view.dart': """import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -73,7 +50,6 @@ class ExampleView extends StatefulWidget {
 }
 
 class _ExampleView extends State<ExampleView> {
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ExampleViewModel>(
@@ -81,7 +57,7 @@ class _ExampleView extends State<ExampleView> {
       child: Builder(builder: (context) {
         return Consumer<ExampleViewModel>(builder: (context, viewModel, child) {
           return Container(
-           child: widget, 
+            child: widget,
           );
         });
       }),
@@ -91,12 +67,12 @@ class _ExampleView extends State<ExampleView> {
   };
 
   for (final entry in files.entries) {
-    final file = File('${baseDir.path}/${entry.key}');
+    final file = File('\${baseDir.path}/\${entry.key}');
     await file.writeAsString(entry.value);
   }
 
-  final pubspec = File('${baseDir.path}/pubspec.yaml');
-  await pubspec.writeAsString("""name: $projectName
+  final pubspec = File('\${baseDir.path}/pubspec.yaml');
+  await pubspec.writeAsString("""name: \$projectName
 description: A Flutter MVVM structured project generated via CLI
 version: 0.0.1
 environment:
@@ -115,5 +91,5 @@ flutter:
   uses-material-design: true
 """);
 
-  print('✅ MVVM structure generated in ./$projectName');
+  print('✅ MVVM structure generated in ./\$projectName');
 }
