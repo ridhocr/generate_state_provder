@@ -1,3 +1,7 @@
+## 0.0.6
+
+- Change Name folder structure.
+
 ## 0.0.5
 
 - Fix add generate file in folder structure.

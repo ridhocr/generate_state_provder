@@ -4,13 +4,13 @@ void main(List<String> arguments) async {
   final libDir = Directory('lib');
 
   final folders = [
-    'model',
-    'service/api',
-    'service/lokal',
-    'viewmodel',
-    'view',
-    'other',
-    'customwidget',
+    'models',
+    'services/api',
+    'services/lokal',
+    'viewmodels',
+    'views',
+    'utils',
+    'widgets',
   ];
 
   // 1. Create folder structure inside /lib
@@ -21,10 +21,10 @@ void main(List<String> arguments) async {
 
   // 2. Create template files
   final files = {
-    'view/example_view.dart': """
+    'views/example_view.dart': """
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../viewmodel/example_viewmodel.dart';
+import '../viewmodels/example_viewmodel.dart';
 
 class ExampleView extends StatefulWidget {
   const ExampleView({super.key});
@@ -53,7 +53,7 @@ class _ExampleView extends State<ExampleView> {
   }
 }
 """,
-    'viewmodel/example_viewmodel.dart': """
+    'viewmodels/example_viewmodel.dart': """
 import 'package:flutter/material.dart';
 
 class ExampleViewModel extends ChangeNotifier {
@@ -69,7 +69,7 @@ class ExampleViewModel extends ChangeNotifier {
   }
 }
 """,
-    'service/lokal/shared_preference.dart': """
+    'services/lokal/shared_preference.dart': """
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferenceService {

@@ -20,15 +20,15 @@ This will create the following structure:
 ```
 my_project/
 ├── lib/
-│   ├── model/
-│   ├── service/
+│   ├── models/
+│   ├── services/
 │   │   ├── api/
 │   │   └── lokal/
-│   ├── viewmodel/
+│   ├── utils/
+│   ├── views/
+│   ├── viewmodels/
 │   │   └── example_viewmodel.dart
-│   ├── view/
-│   ├── other/
-│   └── customwidget/
+│   └── widgets/
 └── pubspec.yaml
 ```
 

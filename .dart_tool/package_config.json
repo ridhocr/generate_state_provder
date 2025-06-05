@@ -14,10 +14,10 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-04-23T08:25:53.374783Z",
+  "generated": "2025-06-05T06:58:36.157913Z",
   "generator": "pub",
-  "generatorVersion": "3.6.0",
-  "flutterRoot": "file:///C:/src/flutter",
-  "flutterVersion": "3.27.1",
+  "generatorVersion": "3.7.2",
+  "flutterRoot": "file:///C:/Users/821948/Documents/sdkFlutter/newSdk/flutter",
+  "flutterVersion": "3.29.3",
   "pubCache": "file:///C:/Users/821948/AppData/Local/Pub/Cache"
 }
